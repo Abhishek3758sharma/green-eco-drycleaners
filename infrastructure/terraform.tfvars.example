@@ -1,0 +1,6 @@
+aws_region       = "ap-south-1"
+project          = "ecodry"
+environment      = "prod"
+bucket_name      = "ecodry-prod-assets-REPLACE-WITH-UNIQUE-SUFFIX"
+# To use a Cloudflare-managed custom domain, uncomment this value.
+# domain_name      = "www.example.com"

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+ import { Link, useNavigate } from "@tanstack/react-router";
 import { Phone, Menu, X, User, LogOut, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import logo from "@/assets/logo.png";

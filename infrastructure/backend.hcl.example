@@ -1,0 +1,4 @@
+bucket  = "ecodry-terraform-state-095355901674"
+key     = "ecodry/prod/terraform.tfstate"
+region  = "ap-south-1"
+encrypt = true

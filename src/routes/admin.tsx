@@ -2,7 +2,8 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { SERVICES_DATA, formatPrice, PaymentStatus, OrderStatus, Booking, generateCounterOrderId, OrderItem, calculateOrderTotal, PaymentMethod } from "@/lib/business";
-import { Check, X, Filter, LogOut, Search, MessageCircle, MoreVertical, Eye, Settings, Calendar, MapPin, Package, CreditCard, ChevronRight, Ban, Plus, ShoppingCart, Trash2, Smartphone } from "lucide-react";
+import { printReceipt } from "@/lib/receipt";
+import { Check, X, Filter, LogOut, Search, MessageCircle, MoreVertical, Eye, Settings, Calendar, MapPin, Package, CreditCard, ChevronRight, Ban, Plus, ShoppingCart, Trash2, Smartphone, Printer } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin")({
@@ -342,13 +343,23 @@ function AdminPage() {
                          {b.status}
                        </span>
                     </td>
-                    <td className="px-6 py-5 text-right">
-                      <button 
-                        onClick={() => setSelectedOrder(b)}
-                        className="h-10 w-10 bg-gray-100 text-gray-600 rounded-xl inline-flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
-                      >
-                        <Eye className="h-5 w-5" />
-                      </button>
+<td className="px-6 py-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => printReceipt(b)}
+                          className="h-10 w-10 bg-gray-100 text-gray-600 rounded-xl inline-flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
+                          title="Print Order"
+                          aria-label="Print Order"
+                        >
+                          <Printer className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => setSelectedOrder(b)}
+                          className="h-10 w-10 bg-gray-100 text-gray-600 rounded-xl inline-flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
+                        >
+                          <Eye className="h-5 w-5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

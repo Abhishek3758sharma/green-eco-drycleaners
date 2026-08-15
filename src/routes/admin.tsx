@@ -1,10 +1,20 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { SERVICES_DATA, formatPrice, PaymentStatus, OrderStatus, Booking, generateCounterOrderId, OrderItem, calculateOrderTotal, PaymentMethod } from "@/lib/business";
 import { printReceipt } from "@/lib/receipt";
-import { Check, X, Filter, LogOut, Search, MessageCircle, MoreVertical, Eye, Settings, Calendar, MapPin, Package, CreditCard, ChevronRight, Ban, Plus, ShoppingCart, Trash2, Smartphone, Printer } from "lucide-react";
+import { Check, X, Filter, LogOut, Search, MessageCircle, MoreVertical, Eye, Settings, Calendar, MapPin, Package, CreditCard, ChevronRight, Ban, Plus, ShoppingCart, Trash2, Smartphone, Printer, Bell, BellOff, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
+
+interface AdminNotification {
+  id: string;
+  orderId: string;
+  customerName: string;
+  amount: string;
+  time: string;
+  read: boolean;
+  booking: Booking;
+}
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -26,11 +36,128 @@ function AdminPage() {
     payment_method: "Cash" as PaymentMethod,
     transaction_id: ""
   });
+
+  // Notification State
+  const [notifications, setNotifications] = useState<AdminNotification[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationSound] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAA=");
+    }
+    return null;
+  });
+  
+  // Ref to track seen order IDs for duplicate prevention without triggering effect re-runs
+  const seenOrderIdsRef = useRef<Set<string>>(new Set());
   
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
+  }, []);
+
+  // Realtime subscription for new website orders - established after auth
+  useEffect(() => {
+    // Don't create subscription if already exists
+    const channel = supabase.channel("admin-new-orders");
+
+    channel
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "bookings",
+          filter: "booking_source=eq.website",
+        },
+        (payload) => {
+          console.log("[Realtime] INSERT event received:", payload);
+          console.log("[Realtime] New booking:", payload.new);
+          console.log("[Realtime] booking_source:", (payload.new as any)?.booking_source);
+          
+          const newBooking = payload.new as Booking;
+          
+          // Avoid duplicate notifications using ref
+          if (seenOrderIdsRef.current.has(newBooking.order_id)) {
+            console.log("[Realtime] Duplicate order_id, skipping:", newBooking.order_id);
+            return;
+          }
+          seenOrderIdsRef.current.add(newBooking.order_id);
+
+          const amount = newBooking.amount_min === newBooking.amount_max || !newBooking.amount_max
+            ? `₹${newBooking.amount_min}`
+            : `₹${newBooking.amount_min}–₹${newBooking.amount_max}`;
+
+          const notification: AdminNotification = {
+            id: newBooking.order_id,
+            orderId: newBooking.order_id,
+            customerName: newBooking.name,
+            amount,
+            time: new Date(newBooking.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
+            read: false,
+            booking: newBooking,
+          };
+
+          console.log("[Realtime] Adding notification for:", newBooking.order_id);
+          setNotifications((prev) => [notification, ...prev]);
+          
+          // Show toast notification
+          toast.info("New Order Received", {
+            description: `${newBooking.order_id} — ${newBooking.name} — ${amount}`,
+            action: {
+              label: "View",
+              onClick: () => setSelectedOrder(newBooking),
+            },
+            duration: 10000,
+          });
+
+          // Play notification sound (best effort, may be blocked by browser autoplay policy)
+          if (notificationSound) {
+            notificationSound.play().catch(() => {
+              // Ignore autoplay errors
+            });
+          }
+        }
+      )
+      .subscribe((status, err) => {
+        console.log("[Realtime] Subscription status:", status, err ? err.message : "");
+        if (status === "SUBSCRIBED") {
+          console.log("[Realtime] Successfully subscribed to bookings INSERT (website)");
+        } else if (status === "CHANNEL_ERROR") {
+          console.error("[Realtime] Channel error:", err);
+        } else if (status === "TIMED_OUT") {
+          console.error("[Realtime] Subscription timed out");
+        } else if (status === "CLOSED") {
+          console.log("[Realtime] Channel closed");
+        }
+      });
+
+    return () => {
+      console.log("[Realtime] Cleaning up channel");
+      supabase.removeChannel(channel);
+    };
+  }, []); // Empty deps - subscription created once after mount
+
+  // Click outside to close notifications dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      // Check if click is outside the notification bell and dropdown
+      const isInside = target.closest('[aria-label="Notifications"]');
+      console.log("[Notification] Click outside check:", { target: target.tagName, isInside: !!isInside });
+      if (!isInside) {
+        console.log("[Notification] Closing dropdown");
+        setShowNotifications(false);
+      }
+    }
+    // Use setTimeout to allow click events to propagate first
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   async function checkAuth() {
@@ -50,6 +177,8 @@ function AdminPage() {
   }
 
   async function handleLogout() {
+    // Clear seen order IDs ref on logout
+    seenOrderIdsRef.current.clear();
     await supabase.auth.signOut();
     navigate({ to: "/login", replace: true });
   }
@@ -64,7 +193,13 @@ function AdminPage() {
       console.error(error);
       return;
     }
-    setBookings(data || []);
+    const bookingsData = data || [];
+    setBookings(bookingsData);
+    
+    // Initialize seen order IDs ref with existing website orders to prevent notifications for them
+    bookingsData
+      .filter(b => b.booking_source === "website")
+      .forEach(b => seenOrderIdsRef.current.add(b.order_id));
   }
 
   async function updateStatus(id: number, status: OrderStatus, paymentStatus?: PaymentStatus) {
@@ -217,6 +352,113 @@ function AdminPage() {
           >
             <Settings className="h-4 w-4" /> <span className="hidden sm:inline">Settings</span>
           </Link>
+          
+          {/* Notification Bell */}
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative h-10 w-10 bg-gray-100 text-gray-600 rounded-xl inline-flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              {notifications.some(n => !n.read) ? (
+                <Bell className="h-5 w-5" />
+              ) : (
+                <BellOff className="h-5 w-5" />
+              )}
+              {notifications.some(n => !n.read) && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                  {notifications.filter(n => !n.read).length > 9 ? "9+" : notifications.filter(n => !n.read).length}
+                </span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div 
+                className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-border overflow-hidden z-50 animate-in slide-in-from-top-2"
+                aria-label="Notifications"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-4 border-b border-border flex items-center justify-between">
+                  <h3 className="font-black text-sm">Notifications</h3>
+                  {notifications.some(n => !n.read) && (
+                    <button
+                      onClick={(e) => {
+                        console.log("[Notification] Mark all read clicked");
+                        e.stopPropagation();
+                        setNotifications(prev => {
+                          console.log("[Notification] Mark all read - prev:", prev);
+                          const updated = prev.map(n => ({ ...n, read: true }));
+                          console.log("[Notification] Mark all read - updated:", updated);
+                          return updated;
+                        });
+                      }}
+                      className="text-xs font-bold text-primary hover:underline"
+                    >
+                      Mark all read
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-8 text-center text-muted-foreground text-sm">No notifications</div>
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        className={`p-4 border-b border-border hover:bg-gray-50 transition-colors flex items-start gap-3 ${!n.read ? "bg-blue-50" : ""}`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm text-gray-900">New Order Received</p>
+                          <p className="text-xs text-muted-foreground">{n.orderId} — {n.customerName} — {n.amount}</p>
+                          <p className="text-[10px] text-muted-foreground">{n.time}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {!n.read && (
+                            <span className="h-2 w-2 bg-primary rounded-full" />
+                          )}
+                          <button
+                            onClick={(e) => {
+                              console.log("[Notification] View button clicked for:", n.id);
+                              e.stopPropagation();
+                              setNotifications(prev => {
+                                console.log("[Notification] View button - prev:", prev);
+                                const updated = prev.map(item => item.id === n.id ? { ...item, read: true } : item);
+                                console.log("[Notification] View button - updated:", updated);
+                                return updated;
+                              });
+                              setSelectedOrder(n.booking);
+                              setShowNotifications(false);
+                            }}
+                            className="text-xs font-bold text-primary hover:underline px-2 py-1"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              console.log("[Notification] X button clicked for:", n.id);
+                              e.stopPropagation();
+                              setNotifications(prev => {
+                                console.log("[Notification] X button - prev:", prev);
+                                const updated = prev.map(item => item.id === n.id ? { ...item, read: true } : item);
+                                console.log("[Notification] X button - updated:", updated);
+                                return updated;
+                              });
+                            }}
+                            className="text-muted-foreground hover:text-gray-600 p-1"
+                            aria-label="Mark as read"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button 
             onClick={handleLogout}
             className="flex items-center gap-2 text-sm font-bold text-red-600 hover:bg-red-50 px-4 py-2 rounded-xl transition-all"

@@ -95,7 +95,7 @@ export const printReceipt = (booking: Booking) => {
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-8 gap-6">
           <div>
             <h1 class="text-3xl font-extrabold text-green-600 tracking-tight">${BUSINESS.name}</h1>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Premium Dry Cleaning & Laundry</p>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Premium Dry Cleaning</p>
             <p class="text-sm text-gray-500 mt-2 max-w-md font-medium">${BUSINESS.address}</p>
           </div>
           <div class="text-left sm:text-right space-y-1">
@@ -181,7 +181,7 @@ export const printReceipt = (booking: Booking) => {
             <li>Please count garments and verify items before leaving the counter or at delivery. No complaints will be entertained afterward.</li>
             <li>We exercise extreme caution in processing your garments, but we cannot assume responsibility for color bleeding, fabric shrinkage, or damage to aged/fragile materials.</li>
             <li>Any discrepancy or damage must be reported in writing within 24 hours of delivery, accompanied by this original receipt.</li>
-            <li>Our liabilities in case of damage or loss shall not exceed 5 times the laundry/dry cleaning charges of that particular garment.</li>
+            <li>Our liabilities in case of damage or loss shall not exceed 5 times the dry cleaning charges of that particular garment.</li>
           </ol>
         </div>
 

@@ -80,10 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "Green Eco Drycleaners — Dry Cleaning & Laundry in Gurugram" },
-        { name: "description", content: "Eco-friendly dry cleaning and laundry services with free pickup and delivery across Gurugram. Professional care for suits, sarees, blankets, sofas and more." },
-        { name: "keywords", content: "dry cleaners gurugram, laundry service gurugram, eco-friendly dry cleaning, saree dry cleaning, suit dry cleaning, doorstep laundry gurugram" },
-        { property: "og:title", content: "Green Eco Drycleaners — Dry Cleaning & Laundry in Gurugram" },
+        { title: "Green Eco Drycleaners — Professional Dry Cleaning in Gurugram" },
+        { name: "description", content: "Eco-friendly dry cleaning with free pickup and delivery across Gurugram. Professional care for suits, sarees, blankets, sofas and more." },
+        { name: "keywords", content: "dry cleaners gurugram, professional dry cleaning, eco-friendly dry cleaning, saree dry cleaning, suit dry cleaning, doorstep dry cleaning gurugram" },
+        { property: "og:title", content: "Green Eco Drycleaners — Professional Dry Cleaning in Gurugram" },
         { property: "og:description", content: "Eco-friendly dry cleaning with free pickup & delivery across Gurugram. Professional care for your precious garments." },
         { property: "og:type", content: "website" },
         { property: "og:url", content: canonical },
@@ -115,7 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LaundryBusiness",
+    "@type": "DryCleaningOrLaundry",
     "name": "Green Eco Drycleaners",
     "image": "https://greenecodrycleaners.com/assets/logo.png",
     "@id": "https://greenecodrycleaners.com",

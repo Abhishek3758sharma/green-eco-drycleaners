@@ -11,8 +11,8 @@ export const Route = createFileRoute("/contact")({
     return {
       meta: [
         { title: "Contact — Green Eco Drycleaners" },
-        { name: "description", content: "Contact Green Eco Drycleaners in Sector-90, Gurugram. Call us at +91 8796422972, WhatsApp, or visit our store for premium laundry care." },
-        { name: "keywords", content: "contact dry cleaners gurugram, dry cleaner near me sector 90, laundry service phone number, WhatsApp laundry gurugram" },
+        { name: "description", content: "Contact Green Eco Drycleaners in Sector-90, Gurugram. Call us at +91 8796422972, WhatsApp, or visit our store for premium dry cleaning care." },
+        { name: "keywords", content: "contact dry cleaners gurugram, dry cleaner near me sector 90, dry cleaning service phone number, WhatsApp dry cleaning gurugram" },
         { property: "og:title", content: "Contact — Green Eco Drycleaners" },
         { property: "og:description", content: "Reach us by phone, WhatsApp or store visit in Gurugram." },
         { property: "og:url", content: canonical },

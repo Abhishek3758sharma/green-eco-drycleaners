@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Phone, MessageCircle, Leaf, Truck, Tag, Sparkles, Calendar, Package, WashingMachine, Home as HomeIcon, ArrowRight } from "lucide-react";
+import { Phone, MessageCircle, Leaf, Truck, Tag, Sparkles, Calendar, Package, Home as HomeIcon, ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { BUSINESS } from "@/lib/business";
 import hero from "@/assets/hero.jpg";
@@ -9,9 +9,9 @@ export const Route = createFileRoute("/")({
     const canonical = "https://greenecodrycleaners.com";
     return {
       meta: [
-        { title: "Green Eco Drycleaners — Dry Cleaning & Laundry in Gurugram" },
+        { title: "Green Eco Drycleaners — Professional Dry Cleaning in Gurugram" },
         { name: "description", content: "Professional eco-friendly dry cleaning with free pickup & delivery across Gurugram. We care for your clothes using plant-based solvents. Book online." },
-        { name: "keywords", content: "dry cleaners gurugram, laundry service, eco-friendly dry cleaning, free pickup delivery laundry, best dry cleaner in gurugram" },
+        { name: "keywords", content: "dry cleaners gurugram, professional dry cleaning, eco-friendly dry cleaning, free pickup delivery dry cleaning, best dry cleaner in gurugram" },
         { property: "og:title", content: "Green Eco Drycleaners — Best Dry Cleaning in Gurugram" },
         { property: "og:description", content: "Professional eco-friendly dry cleaning with free pickup & delivery across Gurugram." },
         { property: "og:url", content: canonical },
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/")({
 
 const features = [
   { icon: Leaf, title: "Eco-Friendly Cleaning", desc: "Plant-based, biodegradable solvents that are gentle on your clothes and the planet." },
-  { icon: Truck, title: "Free Pickup & Delivery", desc: "We collect and return your laundry at your doorstep across Gurugram — at no extra cost." },
+  { icon: Truck, title: "Free Pickup & Delivery", desc: "We collect and return your garments at your doorstep across Gurugram — at no extra cost." },
   { icon: Tag, title: "Affordable Pricing", desc: "Transparent rates with no hidden charges. Premium service at fair, honest prices." },
   { icon: Sparkles, title: "Professional Care", desc: "Trained staff and modern machinery for spotless, fresh, perfectly pressed results." },
 ];
@@ -34,7 +34,7 @@ const features = [
 const steps = [
   { icon: Calendar, title: "Schedule Pickup", desc: "Book online or call. Choose a date & time that works." },
   { icon: Package, title: "We Collect Clothes", desc: "Our team arrives at your door to collect your items." },
-  { icon: WashingMachine, title: "Professional Cleaning", desc: "Each garment is cleaned with care using eco-friendly methods." },
+  { icon: Sparkles, title: "Professional Cleaning", desc: "Each garment is cleaned with care using eco-friendly methods." },
   { icon: HomeIcon, title: "Doorstep Delivery", desc: "Crisp, fresh and folded — delivered right back to you." },
 ];
 
@@ -50,7 +50,7 @@ function Home() {
               <Leaf className="h-3.5 w-3.5" /> 100% Eco-Friendly Cleaning
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] lg:leading-[1.05] tracking-tight">
-              Professional <span className="text-primary">Dry Cleaning</span> & Laundry Services
+              Professional <span className="text-primary">Dry Cleaning</span>
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
               Free Pickup & Delivery Across Gurugram. Premium care for every garment — from daily wear to your most precious sherwani.
@@ -86,7 +86,7 @@ function Home() {
           </div>
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-hero opacity-10 rounded-3xl blur-2xl" />
-            <img src={hero} alt="Fresh, clean folded laundry on wooden hangers" width={1536} height={1024} className="relative rounded-2xl shadow-soft w-full h-auto object-cover aspect-[4/3]" />
+            <img src={hero} alt="Fresh, clean pressed garments on wooden hangers" width={1536} height={1024} className="relative rounded-2xl shadow-soft w-full h-auto object-cover aspect-[4/3]" />
             <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-xl p-4 shadow-card hidden sm:flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Sparkles className="h-5 w-5 text-primary" />

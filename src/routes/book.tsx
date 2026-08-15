@@ -12,8 +12,8 @@ export const Route = createFileRoute("/book")({
     return {
       meta: [
         { title: "Book Pickup — Green Eco Drycleaners" },
-        { name: "description", content: "Schedule a free dry cleaning pickup in Gurugram. Professional eco-friendly laundry service at your doorstep. Book online in seconds." },
-        { name: "keywords", content: "book laundry pickup gurugram, schedule dry cleaning, online laundry booking, free pickup delivery dry cleaning" },
+        { name: "description", content: "Schedule a free dry cleaning pickup in Gurugram. Professional eco-friendly dry cleaning service at your doorstep. Book online in seconds." },
+        { name: "keywords", content: "book dry cleaning pickup gurugram, schedule dry cleaning, online dry cleaning booking, free pickup delivery dry cleaning" },
         { property: "og:title", content: "Book Pickup — Green Eco Drycleaners" },
         { property: "og:description", content: "Schedule a free dry cleaning pickup in Gurugram. Fast, easy, and eco-friendly." },
         { property: "og:url", content: canonical },

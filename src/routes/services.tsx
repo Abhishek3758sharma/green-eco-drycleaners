@@ -10,7 +10,7 @@ export const Route = createFileRoute("/services")({
       meta: [
         { title: "Services — Green Eco Drycleaners" },
         { name: "description", content: "Expert dry cleaning for men's wear, women's wear and home care in Gurugram. From silk sarees to heavy blankets, we handle everything with care." },
-        { name: "keywords", content: "dry cleaning services gurugram, laundry services, saree dry cleaning, suit cleaning, home care laundry, blanket cleaning gurugram" },
+        { name: "keywords", content: "dry cleaning services gurugram, saree dry cleaning, suit cleaning, home care dry cleaning, blanket cleaning gurugram" },
         { property: "og:title", content: "Services — Green Eco Drycleaners" },
         { property: "og:description", content: "Full-service dry cleaning for clothes & home care items with free pickup." },
         { property: "og:url", content: canonical },
@@ -44,7 +44,7 @@ function ServicesPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold">Our Services</h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Expert care for every fabric. Choose from our wide range of dry cleaning and laundry services.
+            Expert care for every fabric. Choose from our wide range of professional dry cleaning services.
           </p>
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-semibold text-primary">
             <Sparkles className="h-4 w-4" /> Steam Iron Available at 50% Off

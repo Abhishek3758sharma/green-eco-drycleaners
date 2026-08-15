@@ -12,7 +12,7 @@ export function Footer() {
             <span className="font-bold text-lg">Green Eco</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-            Premium eco-friendly dry cleaning and laundry services with free pickup and delivery across Gurugram.
+            Premium eco-friendly dry cleaning with free pickup and delivery across Gurugram.
           </p>
         </div>
 

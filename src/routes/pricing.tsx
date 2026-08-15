@@ -10,8 +10,8 @@ export const Route = createFileRoute("/pricing")({
     return {
       meta: [
         { title: "Pricing — Green Eco Drycleaners" },
-        { name: "description", content: "Transparent and affordable pricing for dry cleaning and laundry services in Gurugram. Free pickup and delivery included." },
-        { name: "keywords", content: "dry cleaning rates gurugram, laundry prices gurugram, affordable dry cleaners, laundry cost per kg, steam iron price" },
+        { name: "description", content: "Transparent and affordable pricing for dry cleaning services in Gurugram. Free pickup and delivery included." },
+        { name: "keywords", content: "dry cleaning rates gurugram, affordable dry cleaners, steam iron price, dry cleaning price list" },
         { property: "og:title", content: "Pricing — Green Eco Drycleaners" },
         { property: "og:description", content: "Transparent, affordable dry cleaning rates with free pickup." },
         { property: "og:url", content: canonical },
